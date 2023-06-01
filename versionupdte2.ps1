@@ -17,4 +17,4 @@ git add $FilePath
 git commit -m "Update version number"
 
 # Push the changes to the remote repository
-git push origin master
+git push origin main
