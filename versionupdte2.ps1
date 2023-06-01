@@ -1,29 +1,20 @@
 param (
-    [string]$RootPath,
-    [string]$VersionNumber,
-    [string]$BranchName,
-    [string]$RemoteName
+    [string]$RepoPath,
+    [string]$FilePath,
+    [string]$NewVersion
 )
 
-# Change to the root directory
-Set-Location $RootPath
+# Change to the repository directory
+Set-Location $RepoPath
 
-# Find all version.txt files recursively
-$versionFiles = Get-ChildItem -Path $RootPath -Filter "version.txt" -File -Recurse
+# Update the text file with the new version number
+Add-Content -Path $FilePath -Value $NewVersion
 
-# Iterate over each version.txt file
-foreach ($file in $versionFiles) {
-    # Append the version number to the file
-    $fileContent = Get-Content $file.FullName
-    $fileContent += $VersionNumber
-    $fileContent | Set-Content $file.FullName
-
-    # Stage the file for commit
-    git add $file.FullName
-}
+# Stage the file for commit
+git add $FilePath
 
 # Commit the changes
-git commit -m "Update version numbers"
+git commit -m "Update version number"
 
 # Push the changes to the remote repository
-git push $RemoteName $BranchName
+git push origin master
