@@ -23,8 +23,5 @@ git commit -m "Appended version number"
 # Switch to the main branch
 git checkout $Branch
 
-# Merge the specified branch into main
-git merge $Branch
-
 # Push changes to main
 git push origin $Branch
