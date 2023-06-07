@@ -1,7 +1,7 @@
 param (
     [string]$RepoPath,
     [string]$FilePath,
-    [string]$NewVersion,
+    [version]$NewVersion,
     [string]$Branch = "main" # Default branch is set to "main"
 )
 
