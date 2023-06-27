@@ -17,9 +17,9 @@
 
         git add $FileName
 
-        git checkout $Branch
-
         git commit -m 'Appended version number'
+
+        git checkout $Branch
 
         git push origin $Branch
     }
