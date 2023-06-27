@@ -1,6 +1,5 @@
-function versionupdte2
-{
-    [CmdletBinding(SupportsShouldProcess)]
+
+[CmdletBinding(SupportsShouldProcess)]
     param (
         [string]$RepoPath,
         [string]$FilePath,
@@ -27,4 +26,3 @@ function versionupdte2
 
         git push origin $Branch
     }
-}
