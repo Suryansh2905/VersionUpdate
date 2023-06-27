@@ -1,18 +1,27 @@
-param (
-    [string]$RepoPath,
-    [string]$FilePath,
-    [string]$NewVersion,
-    [string]$Branch = "main" # Default branch is set to "main"
-)
 
-# Change to the repository directory
-Set-Location $RepoPath
+[CmdletBinding(SupportsShouldProcess)]
+    param (
+        [string]$RepoPath,
+        [string]$FileName,
+        [version]$NewVersion,
+        [string]$Branch = 'main'
+    )
 
-Add-Content -Path $FilePath -Value $NewVersion
+    Push-Location $RepoPath
 
-git add $FilePath
+    if (-not (Test-Path $FileName -PathType Leaf)) {
+        throw "Invalid file path: $FileName"
+    }
+    if ($PSCmdlet.ShouldProcess('Program adds the released version number to the specified file, commits the changes and pushes them.')) {
+        Add-Content -Path $FileName -Value $NewVersion
 
-git commit -m "Appended version number"
+        git add $FileName
 
-git push origin $Branch # Push to the specified branch
+        git checkout $Branch
 
+        git commit -m 'Appended version number'
+
+        git push origin $Branch
+    }
+
+    Pop-Location
