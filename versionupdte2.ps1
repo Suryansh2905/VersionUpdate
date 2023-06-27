@@ -1,27 +1,30 @@
-param (
-    [string]$RepoPath,
-    [string]$FilePath,
-    [version]$NewVersion,
-    [string]$Branch = "main" # Default branch is set to "main"
-)
+function versionupdte2
+{
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [string]$RepoPath,
+        [string]$FilePath,
+        [version]$NewVersion,
+        [string]$Branch = 'main'
+    )
 
-# Change to the repository directory
-Set-Location $RepoPath
+    # Resolve the absolute file path within the repository
+    $AbsoluteFilePath = Join-Path -Path $RepoPath -ChildPath $FilePath
 
-# Check if the file path exists
-if (-not (Test-Path $FilePath -PathType Leaf)) {
-    Write-Error "Invalid file path: $FilePath"
-    return
+    Set-Location $RepoPath
+
+    if (-not (Test-Path $AbsoluteFilePath -PathType Leaf)) {
+        throw "Invalid file path: $AbsoluteFilePath"
+    }
+    if ($PSCmdlet.ShouldProcess('Program adds the released version number to the specified file, commits the changes and pushes them.')) {
+        Add-Content -Path $AbsoluteFilePath -Value $NewVersion
+
+        git add $AbsoluteFilePath
+
+        git checkout $Branch
+
+        git commit -m 'Appended version number'
+
+        git push origin $Branch
+    }
 }
-
-Add-Content -Path $FilePath -Value $NewVersion
-
-git add $FilePath
-
-git commit -m "Appended version number"
-
-# Switch to the main branch
-git checkout $Branch
-
-# Push changes to main
-git push origin $Branch
