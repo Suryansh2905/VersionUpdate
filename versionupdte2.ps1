@@ -2,23 +2,20 @@
 [CmdletBinding(SupportsShouldProcess)]
     param (
         [string]$RepoPath,
-        [string]$FilePath,
+        [string]$FileName,
         [version]$NewVersion,
         [string]$Branch = 'main'
     )
 
-    # Resolve the absolute file path within the repository
-    $AbsoluteFilePath = Join-Path -Path $RepoPath -ChildPath $FilePath
+    Push-Location $RepoPath
 
-    Set-Location $RepoPath
-
-    if (-not (Test-Path $AbsoluteFilePath -PathType Leaf)) {
-        throw "Invalid file path: $AbsoluteFilePath"
+    if (-not (Test-Path $FileName -PathType Leaf)) {
+        throw "Invalid file path: $FileName"
     }
     if ($PSCmdlet.ShouldProcess('Program adds the released version number to the specified file, commits the changes and pushes them.')) {
-        Add-Content -Path $AbsoluteFilePath -Value $NewVersion
+        Add-Content -Path $FileName -Value $NewVersion
 
-        git add $AbsoluteFilePath
+        git add $FileName
 
         git checkout $Branch
 
@@ -26,3 +23,5 @@
 
         git push origin $Branch
     }
+
+    Pop-Location
